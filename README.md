@@ -4,7 +4,7 @@ Personal Project – In Progress
 ## Text stack
 
  - Nodejs, Express
- -  MySql (Sequelize) 
+ - MySql (Sequelize) 
  - JWT Authentication
  ## Core Features
  - User registration / login
