@@ -1,15 +1,21 @@
 const {Sequelize,DataTypes}= require('sequelize')
 const {sequelize}= require('./db');
 const User= sequelize.define('User',{
-    username: {
-        type: DataTypes.STRING(50),
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey:true,
+        autoIncrement:true,
+        allowNull:false,
+    },
+    name: {
+        type: DataTypes.STRING,
         allowNull: false,
         validate:{
             notEmpty: true,
         }
     },
     email:{
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING,
         allowNull:false,
         unique: true,
         validate:{
@@ -33,6 +39,9 @@ const User= sequelize.define('User',{
             isIn: [['admin', 'customer']]
         }
     }
+},{
+    tableName:'users',
+    timestamps: false,
 })
 
 module.exports=User;
