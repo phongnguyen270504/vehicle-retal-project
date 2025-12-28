@@ -43,8 +43,15 @@ const createCar= async (req,res)=>{
 const updateCar= async (req,res)=>{
     try{
         const {id}= req.params;
+        if(!Number.isInteger(Number(id)) || Number(id)<=0)
+        {
+             return res.status(400).json({message: 'ID không hợp lệ'});
+        }
+
         const data= req.body;
+
         const car= await carService.updateCar(id, data);
+
         res.json({
             message: 'Cập nhật xe thành công',
             data: car
@@ -61,6 +68,11 @@ const updateCar= async (req,res)=>{
 const deleteCar = async(req,res)=>{
     try {
         const {id}= req.params;
+
+        if(!Number.isInteger(Number(id)) || Number(id)<=0)
+        {
+             return res.status(400).json({message: 'ID không hợp lệ'});
+        }
 
         await carService.deleteCar(id);
         res.json({

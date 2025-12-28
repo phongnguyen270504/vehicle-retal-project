@@ -97,14 +97,28 @@ const createCar = async (data)=>{
         throw err;
     }
 
-    const brand = await Brand.findByPk(brand_id);
+    const brandId= Number(brand_id);
+    if (isNaN(brandId) || brandId <= 0) {
+        const err = new Error('Brand ID không hợp lệ');
+        err.statusCode = 400;
+        throw err;
+    }
+
+    const brand = await Brand.findByPk(brandId);
     if (!brand) {
         const err = new Error('Brand không tồn tại');
         err.statusCode = 400;
         throw err;
     }
 
-    const type = await CarType.findByPk(type_id);
+    const typeId= Number(type_id);
+    if (isNaN(typeId) || typeId <= 0) {
+        const err = new Error('Car type ID không hợp lệ');
+        err.statusCode = 400;
+        throw err;
+    }
+    
+    const type = await CarType.findByPk(typeId);
     if (!type) {
         const err = new Error('Car type không tồn tại');
         err.statusCode = 400;
@@ -114,15 +128,15 @@ const createCar = async (data)=>{
     const price = Number(price_per_day);
 
     if (isNaN(price) || price <= 0) {
-    const err = new Error('Giá thuê không hợp lệ');
-    err.statusCode = 400;
-    throw err;
+        const err = new Error('Giá thuê không hợp lệ');
+        err.statusCode = 400;
+        throw err;
     }
 
     const car= await Car.create({
         name,
-        brand_id,
-        type_id,
+        brand_id: brandId,
+        type_id: typeId,
         price_per_day,
         status: "available"
     })

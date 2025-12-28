@@ -32,10 +32,14 @@ const Rental= sequelize.define(
             allowNull:false,
         },
         status:{
-            type: DataTypes.ENUM('active','completed','cancelled'),
+            type: DataTypes.ENUM('pending','active','completed','cancelled'),
             allowNull:false,
-            defaultValue:'active',
+            defaultValue:'pending',
         }
+    },
+    {
+        tableName:'rentals',
+        timestamps: false,
     }
 )
 
