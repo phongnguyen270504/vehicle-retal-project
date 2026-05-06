@@ -11,9 +11,13 @@ const Rental= sequelize.define(
             autoIncrement: true,
             primaryKey: true
         },
-        user_id:{
+        customer_id:{
             type: DataTypes.INTEGER,
             allowNull: false,
+        },
+        admin_id:{
+            type: DataTypes.INTEGER,
+            allowNull: true,
         },
         car_id:{
             type: DataTypes.INTEGER,
@@ -43,9 +47,11 @@ const Rental= sequelize.define(
     }
 )
 
-Rental.belongsTo(User,{foreignKey:'user_id'});
-User.hasMany(Rental,{foreignKey:'user_id'})
+Rental.belongsTo(User,{foreignKey:'customer_id'});
+User.hasMany(Rental,{foreignKey:'customer_id'})
 Rental.belongsTo(Car,{foreignKey:'car_id'});
 Car.hasMany(Rental,{foreignKey:'car_id'});
+Rental.belongsTo(User,{foreignKey:'admin_id'});
+User.hasMany(Rental,{foreignKey:'admin_id'});
 
 module.exports=Rental;

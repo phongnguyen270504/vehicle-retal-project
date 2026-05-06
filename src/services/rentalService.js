@@ -6,7 +6,7 @@ const { Op }= require('sequelize');
 const getRentals= async (options={})=>{
     const where={};
     if(options.userId){
-        where.user_id= options.userId;
+        where.customer_id= options.userId;
     }
     if(options.status){
         where.status= options.status;
@@ -57,8 +57,7 @@ const getRentalById= async (rentalId)=>{
 
     return rental;
 }
-const confirmRental= async(rentalId)=>{
-
+const confirmRental= async(rentalId,adminId)=>{
     const transaction= await sequelize.transaction();
     try {
         const rental= await Rental.findByPk(rentalId,
@@ -109,6 +108,7 @@ const confirmRental= async(rentalId)=>{
         }
 
         rental.status='active';
+        rental.admin_id=adminId;
         await rental.save({transaction});
         rental.Car.status='rented';
         await rental.Car.save({transaction});
@@ -213,7 +213,7 @@ const rentalCreate=async(userId,data)=>{
     const total_price= days * Number(car.price_per_day);
 
    const rental= await Rental.create({
-        user_id: userId,
+        customer_id: userId,
         car_id,
         start_date,
         end_date,

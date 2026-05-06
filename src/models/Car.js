@@ -1,7 +1,7 @@
 const {Sequelize,DataTypes}= require('sequelize')
 const {sequelize}= require('./db');
-const Brand = require('./Brand');
-const CarType= require('./CarType');
+// const Brand = require('./Brand');
+// const CarType= require('./CarType');
 const Car= sequelize.define(
     'Car',{
         id:{
@@ -17,35 +17,31 @@ const Car= sequelize.define(
                 notEmpty:true
             }
         },
-        brand_id:{
-            type: DataTypes.INTEGER,
-            allowNull: false,
+        brand:{
+            type: DataTypes.STRING,
+            allowNull: true,
         },
-        type_id:{
-            type: DataTypes.INTEGER,
-            allowNull:false,
+        type:{
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         price_per_day:{
-            type: DataTypes.DECIMAL,
+            type: DataTypes.DECIMAL(10,2),
             allowNull:false,
         },
         status:{
             type: DataTypes.ENUM('available','rented','maintenance'),
             defaultValue: 'available'
         },
-        image:{
-            type: DataTypes.STRING,
-            allowNull: true,
-        }
+        // image:{
+        //     type: DataTypes.STRING,
+        //     allowNull: true,
+        // }
     },{
         tableName:'cars',
         timestamps: false,
     }
 );
 
-Car.belongsTo(Brand,{ foreignKey:'brand_id'});
-Brand.hasMany(Car,{foreignKey:'brand_id'})
-Car.belongsTo(CarType,{foreignKey:'type_id'});
-CarType.hasMany(Car,{foreignKey:'type_id'})
 
 module.exports=Car;

@@ -31,6 +31,10 @@ const getAllRentalsByUser= async (req, res)=>{
 const getRentalById= async (req, res)=>{
     try {
         const rentalId= req.params.id;
+        const userId= req.user.id;
+        if(user.role!= 'admin' && rental.userId!= userId){
+            return res.status(403).json({message: 'Bạn không có quyền truy cập đơn thuê này'});
+        }
         const rental= await rentalService.getRentalById(rentalId);
         res.json(rental);
     }
