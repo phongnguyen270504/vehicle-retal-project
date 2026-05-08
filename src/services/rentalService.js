@@ -26,6 +26,7 @@ const getRentals= async (options={})=>{
     );
     return rentals.map(
         r=>({
+            customerId: r.customer_id,
             id: r.id,
             startDate: r.start_date,
             endDate: r.end_date,
@@ -107,9 +108,10 @@ const confirmRental= async(rentalId,adminId)=>{
             throw err;
         }
 
-        rental.status='active';
-        rental.admin_id=adminId;
-        await rental.save({transaction});
+        await rental.update(
+            {status:'active', admin_id: adminId},
+            {transaction}
+        );
         rental.Car.status='rented';
         await rental.Car.save({transaction});
 
@@ -117,6 +119,7 @@ const confirmRental= async(rentalId,adminId)=>{
         return {
             message:'Xác nhận đơn thuê thành công',
             rental_id: rental.id,
+            adminId: rental.admin_id,
         };
     } catch (err) {
         transaction.rollback();
@@ -195,7 +198,7 @@ const rentalCreate=async(userId,data)=>{
         throw err;
     }
 
-    if(car.status ==='maintenance')
+    if(car.status !=='available')
     {
         const err= new Error('Xe không khả dụng để thuê');
         err.statusCode=400;

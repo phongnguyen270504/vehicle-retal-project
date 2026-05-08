@@ -27,7 +27,7 @@ const loginUser= async (email, password) => {
     return token; 
 }
 
-const registerUser = async (name, email, password) => {
+const registerUser = async (email, password) => {
     const hashpass = await bcrypt.hash(password, 10);
     const user = await User.create({
         email,

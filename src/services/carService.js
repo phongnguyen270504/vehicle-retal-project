@@ -163,18 +163,52 @@ const updateCar= async (id,data)=>{
         err.statusCode = 404;
         throw err;
     }
-    if('name' in data && !data.name.trim())
+    const updateData={};
+    if(data.name !== undefined)
     {
-          const err = new Error('Tên xe không được để trống');
-          err.statusCode = 400;
-          throw err;
+        if(typeof data.name !== 'string' || !data.name.trim())
+        {
+            const err = new Error('Tên xe không được để trống');
+            err.statusCode = 400;
+            throw err;
+        }
+        updateData.name= data.name.trim();
     }
-
-    if('price_per_day' in data && Number(data.price_per_day) <=0)
-    {
-        const err = new Error('Giá xe không hợp lệ');
-        err.statusCode = 400;
-        throw err;
+    if(data.price_per_day !== undefined)    {
+        if(isNaN(Number(data.price_per_day)) || Number(data.price_per_day) <=0)
+        {
+            const err = new Error('Giá thuê không hợp lệ');
+            err.statusCode = 400;
+            throw err;
+        }
+        updateData.price_per_day= Number(data.price_per_day);
+    }
+    if(data.status !== undefined)    {
+        if(typeof data.status !== 'string' || !['available', 'rented', 'maintenance'].includes(data.status))
+        {
+            const err = new Error('Trạng thái xe không hợp lệ');
+            err.statusCode = 400;
+            throw err;
+        }
+        updateData.status= data.status;
+    }
+    if(data.brand !== undefined)    {
+        if(typeof data.brand !== 'string' || !data.brand.trim())
+        {
+            const err = new Error('Tên hãng xe không được để trống');
+            err.statusCode = 400;
+            throw err;
+        }
+        updateData.brand= data.brand.trim();
+    }
+    if(data.type !== undefined)    {
+        if(typeof data.type !== 'string' || !data.type.trim())
+        {
+            const err = new Error('Tên loại xe không được để trống');
+            err.statusCode = 400;
+            throw err;
+        }
+        updateData.type= data.type.trim();
     }
     // if('brand_id' in data){
     //     const brandId= Number(data.brand_id);
@@ -204,13 +238,7 @@ const updateCar= async (id,data)=>{
     //         throw err;
     //     }
     // }
-    await car.update({
-        name: data.name ?? car.name,
-        price_per_day: data.price_per_day !== undefined ? Number(data.price_per_day) : car.price_per_day,
-        status: data.status ?? car.status,
-        brand: data.brand ?? car.brand,
-        type: data.type ?? car.type
-    })
+    await car.update(updateData);
 
     const updatedCar = await Car.findByPk(id, {
             attributes: ['id', 'name', 'price_per_day', 'status', 'brand', 'type'],
