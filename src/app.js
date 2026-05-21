@@ -5,7 +5,8 @@ const path = require('path');
 const carRouter= require('./router/carRouter')
 const rentalRouter= require('./router/rentalRouter');
 const authRouter= require('./router/authRouter');
-const homeRouter= require('./router/webRouters/homeRouter');
+const carViewRouter= require('./router/webRouters/carViewRouter');
+const authViewRouter= require('./router/webRouters/authViewRouter');
 
 const app = express();
 
@@ -18,10 +19,11 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/cars', carRouter)
-app.use('/auth', authRouter);
-app.use('/rentals', rentalRouter);
-app.use('/', homeRouter);
+app.use('/api/cars', carRouter)
+app.use('/api/auth', authRouter);
+app.use('/api/rentals', rentalRouter);
+app.use('/', carViewRouter);
+app.use('/auth', authViewRouter);
 
 
 module.exports= app;

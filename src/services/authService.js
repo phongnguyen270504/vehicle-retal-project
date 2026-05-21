@@ -15,16 +15,8 @@ const loginUser= async (email, password) => {
         err.statusCode = 401;
         throw err;
     }
-    const token = jwt.sign(
-        {
-            id: user.id,
-            role: user.role,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
-    );
-
-    return token; 
+   
+    return user; 
 }
 
 const registerUser = async (email, password) => {
@@ -41,4 +33,12 @@ const registerUser = async (email, password) => {
     };
 }
 
-module.exports = { loginUser , registerUser};
+const generateToken = (user) => {
+    return jwt.sign(
+        {  id: user.id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+}
+
+module.exports = { loginUser , registerUser, generateToken};
