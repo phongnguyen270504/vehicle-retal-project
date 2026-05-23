@@ -12,7 +12,7 @@ const loginUser= async (email, password) => {
     const isMatch = await bcrypt.compare(password, user.hashpass);
     if (!isMatch) {
         const err = new Error('Tài khoản hoặc mật khẩu không đúng');
-        err.statusCode = 401;
+        err.statusCode = 404;
         throw err;
     }
    

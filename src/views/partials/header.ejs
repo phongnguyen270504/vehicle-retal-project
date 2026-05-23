@@ -4,7 +4,12 @@
         <div>
             <a class="text-white me-3" href="#">Home</a>
             <a class="text-white me-3" href="#">Cars</a>
-            <a class="text-white" href="../layouts/login.html">Login</a>
+            <% if(!locals.user) { %>
+                <a class="text-white" href="/auth/login">Login</a>
+                <a class="text-white" href="/auth/register">Register</a>
+            <% } else { %>
+                <a class="text-white" href="/auth/logout">Logout</a>
+            <% } %>
         </div>
     </div>
     </nav>

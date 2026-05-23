@@ -1,3 +1,5 @@
+const authService = require('../../services/authService');
+
 const loginPage= async (req,res)=>{
     try {
         res.render('auth/login.ejs',{
@@ -9,4 +11,63 @@ const loginPage= async (req,res)=>{
     }
 }
 
-module.exports={loginPage};
+const login= async (req,res)=>{
+    try {
+        const { email, password } = req.body;
+        const user = await authService.loginUser(email, password);
+        req.session.user = {
+            id: user.id,
+            email: user.email,
+            role: user.role
+        };
+        res.redirect('/cars');
+    } catch (err) {
+        console.error(err);
+        res.status(err.statusCode || 500).json({ message: err.message || 'Server error' });
+    }
+}
+
+const logout= async (req,res)=>{
+    try {
+        req.session.destroy((err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Server error' });
+            }
+            const referrer = req.get('Referrer') || '/cars';
+            res.redirect(referrer);
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+const registerPage= async (req,res)=>{
+    try {
+        res.render('auth/register.ejs',{
+            title: 'Đăng ký'
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+const register= async (req,res)=>{
+    try {
+        const { email, password } = req.body;
+        const user = await authService.registerUser(email, password);
+        req.session.user = {
+            id: user.id,
+            email: user.email,
+            role: user.role
+        };
+        res.redirect('/cars');
+    } catch (err) {
+        console.error(err);
+        res.status(err.statusCode || 500).json({ message: err.message || 'Server error' });
+    }
+}
+
+module.exports={loginPage, login, logout, registerPage, register};
