@@ -93,14 +93,14 @@ const getCarById= async (id)=>{
 }
 
 const createCar = async (data)=>{
-    const {name, brand, type, price_per_day,}= data
+    const {name, brand, type, price_per_day}= data;
 
-    if(!name || !brand || !type || !price_per_day)
-    {
-        const err = new Error('Thiếu dữ liệu bắt buộc');
-        err.statusCode = 400;
-        throw err;
-    }
+    // if(!name || !brand || !type || !price_per_day)
+    // {
+    //     const err = new Error('Thiếu dữ liệu bắt buộc');
+    //     err.statusCode = 400;
+    //     throw err;
+    // }
 
     // const brandId= Number(brand_id);
     // if (isNaN(brandId) || brandId <= 0) {

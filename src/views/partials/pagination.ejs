@@ -1,0 +1,23 @@
+ <div class="pagination page-buttons">
+        <% 
+                const maxButtons = 5;
+                const totalPages = results.totalPages;
+                const currentPage = results.currentPage;
+                let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+                let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+                if (endPage - startPage + 1 < maxButtons) {
+                    startPage = Math.max(1, endPage - maxButtons + 1);
+                }
+            %>
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&limit=2" class="btn btn-sm btn-outline-secondary">Prev</a>
+            <% } %>
+            <% for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
+                const isActive = pageNum === currentPage ? 'active' : '';
+            %>
+                <a href="?page=<%= pageNum %>&limit=2" class="btn btn-sm btn-outline-primary <%= isActive %>"><%= pageNum %></a>
+            <% } %>
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&limit=2" class="btn btn-sm btn-outline-secondary">Next</a>
+            <% } %>
+        </div>

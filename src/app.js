@@ -10,6 +10,7 @@ const rentalRouter= require('./router/rentalRouter');
 const authRouter= require('./router/authRouter');
 const carViewRouter= require('./router/webRouters/carViewRouter');
 const authViewRouter= require('./router/webRouters/authViewRouter');
+const adminViewRouter= require('./router/webRouters/adminViewRouter');
 
 const app = express();
 
@@ -31,8 +32,12 @@ app.use(globalMiddleware.globalVariable);
 app.use('/api/cars', carRouter)
 app.use('/api/auth', authRouter);
 app.use('/api/rentals', rentalRouter);
-app.use('/', carViewRouter);
-app.use('/auth', authViewRouter);
 
+app.get('/', (req, res) => {
+    res.redirect('/cars');
+});
+app.use('/cars', carViewRouter);
+app.use('/auth', authViewRouter);
+app.use('/admin', adminViewRouter);
 
 module.exports= app;

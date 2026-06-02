@@ -58,7 +58,8 @@ const getRentalById= async (rentalId)=>{
 
     return rental;
 }
-const confirmRental= async(rentalId,adminId)=>{
+
+const confirmRental= async (rentalId,adminId)=>{
     const transaction= await sequelize.transaction();
     try {
         const rental= await Rental.findByPk(rentalId,
@@ -127,7 +128,7 @@ const confirmRental= async(rentalId,adminId)=>{
     }
 }
 
-const rentalCancel= async(rentalId,userId)=>{
+const rentalCancel= async (rentalId,userId)=>{
     const rental= await Rental.findByPk(rentalId);
     if(!rental){
         const err= new Error('Đơn thuê không tồn tại');
@@ -156,7 +157,7 @@ const rentalCancel= async(rentalId,userId)=>{
 
 }
 
-const rentalComplete= async(rentalId,userId)=>{
+const rentalComplete= async (rentalId,userId)=>{
     const rental= await Rental.findByPk(rentalId);
     if(!rental){
         const err= new Error('Đơn thuê không tồn tại');
@@ -187,10 +188,11 @@ const rentalComplete= async(rentalId,userId)=>{
     };
 }
 
-const rentalCreate=async(userId,data)=>{
+const rentalCreate= async (userId,data)=>{
     const {car_id,start_date,end_date}= data;
 
     const car= await Car.findByPk(car_id);
+    console.log("Dữ liệu xe:", car);
     if(!car)
     {
         const err= new Error('Xe không tồn tại');
@@ -227,4 +229,11 @@ const rentalCreate=async(userId,data)=>{
     return rental;
 }
 
-module.exports={rentalCreate, getRentals, getRentalById, confirmRental, rentalCancel, rentalComplete};
+module.exports={
+    rentalCreate, 
+    getRentals, 
+    getRentalById, 
+    confirmRental, 
+    rentalCancel, 
+    rentalComplete
+};

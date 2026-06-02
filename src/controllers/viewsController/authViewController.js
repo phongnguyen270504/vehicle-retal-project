@@ -34,8 +34,7 @@ const logout= async (req,res)=>{
                 console.error(err);
                 return res.status(500).json({ message: 'Server error' });
             }
-            const referrer = req.get('Referrer') || '/cars';
-            res.redirect(referrer);
+            res.redirect('/cars');
         });
     } catch (err) {
         console.error(err);
@@ -56,8 +55,8 @@ const registerPage= async (req,res)=>{
 
 const register= async (req,res)=>{
     try {
-        const { email, password } = req.body;
-        const user = await authService.registerUser(email, password);
+        const { email, password, confirmPassword } = req.body;
+        const user = await authService.registerUser(email, password, confirmPassword);
         req.session.user = {
             id: user.id,
             email: user.email,

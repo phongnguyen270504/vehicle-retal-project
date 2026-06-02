@@ -19,7 +19,12 @@ const loginUser= async (email, password) => {
     return user; 
 }
 
-const registerUser = async (email, password) => {
+const registerUser = async (email, password, confirmPassword) => {
+    if (password !== confirmPassword) {
+        const err = new Error('Mật khẩu xác nhận không khớp');
+        err.statusCode = 400;
+        throw err;
+    }
     const hashpass = await bcrypt.hash(password, 10);
     const user = await User.create({
         email,
