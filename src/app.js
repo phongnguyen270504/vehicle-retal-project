@@ -8,9 +8,11 @@ const globalMiddleware= require('./middlewares/global.middleware');
 const carRouter= require('./router/carRouter')
 const rentalRouter= require('./router/rentalRouter');
 const authRouter= require('./router/authRouter');
+
 const carViewRouter= require('./router/webRouters/carViewRouter');
 const authViewRouter= require('./router/webRouters/authViewRouter');
 const adminViewRouter= require('./router/webRouters/adminViewRouter');
+const rentalViewRouter= require('./router/webRouters/rentalViewRouter');;
 
 const app = express();
 
@@ -39,5 +41,10 @@ app.get('/', (req, res) => {
 app.use('/cars', carViewRouter);
 app.use('/auth', authViewRouter);
 app.use('/admin', adminViewRouter);
+app.use('/rentals', rentalViewRouter);
+
+app.use((req, res) => {
+    res.status(404).json({ message: 'Not found' });
+});
 
 module.exports= app;

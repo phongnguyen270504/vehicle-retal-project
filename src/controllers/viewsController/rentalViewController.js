@@ -1,12 +1,10 @@
 const rentalService= require('../../services/rentalService');
 
-
-
 const rentalDetailPage= async (req, res) => {
     try {
         const rentalId= req.params.id;
         const rental= await rentalService.getRentalById(rentalId);
-        res.render('rentals/detail.ejs',{
+        res.render('rentals/rental-detail.ejs',{
             title: 'Chi tiết đơn thuê',
             rental
         });
@@ -16,4 +14,4 @@ const rentalDetailPage= async (req, res) => {
     }
 }
 
-module.exports= {manageRentalsPage, rentalDetailPage};
+module.exports= {rentalDetailPage};

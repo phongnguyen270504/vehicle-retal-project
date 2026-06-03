@@ -16,7 +16,7 @@ const getCarById= async (req,res) =>{
     try {
         const id= Number(req.params.id);
         const car = await carService.getCarById(id);
-        res.render('cars/detail.ejs',{
+        res.render('cars/car-detail.ejs',{
             result: car
         });
     } catch (err) {

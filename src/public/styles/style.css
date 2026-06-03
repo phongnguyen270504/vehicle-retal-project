@@ -47,6 +47,7 @@
             object-fit:cover;
             border-radius:12px;
         }
+
         .box{
             background:white;
             padding:25px;
@@ -56,6 +57,8 @@
 
         /* SIDEBAR */
         .sidebar{
+
+
             width:250px;
 
             background:#212529;
@@ -99,7 +102,7 @@
             padding:25px;
          }
 
-          .table-box{
+        .table-box{
             background:white;
 
             padding:20px;

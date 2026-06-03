@@ -55,8 +55,19 @@ const getRentalById= async (rentalId)=>{
         err.statusCode=404;
         throw err;
     }
-
-    return rental;
+    return {
+        customerId: rental.customer_id,
+        id: rental.id,
+        startDate: rental.start_date,
+        endDate: rental.end_date,
+        totalPrice: rental.total_price,
+        status: rental.status,
+        car:{
+            name: rental.Car.name,
+            pricePerDay: rental.Car.price_per_day,
+            status: rental.Car.status,
+        }
+    };
 }
 
 const confirmRental= async (rentalId,adminId)=>{
