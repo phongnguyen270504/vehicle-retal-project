@@ -67,8 +67,8 @@ const createRental= async (req, res)=>{
 const confirmRental= async (req, res)=>{
     try {
         const rentalId= req.params.id;
-        const adminId= req.user.id;
-        const result= await rentalService.confirmRental(rentalId, adminId);
+        const admin= req.user;
+        const result= await rentalService.confirmRental(rentalId, admin);
         res.json(result);
     }
     catch (err) {
@@ -82,8 +82,8 @@ const confirmRental= async (req, res)=>{
 const rentalCancel= async (req, res)=>{
     try {
         const rentalId= req.params.id;
-        const userId= req.user.id;
-        const result= await rentalService.rentalCancel(rentalId, userId);
+        const user= req.user;
+        const result= await rentalService.rentalCancel(rentalId, user);
         res.json(result);
     }
     catch (err) {
@@ -97,9 +97,9 @@ const rentalCancel= async (req, res)=>{
 const rentalComplete= async (req, res)=>{
     try {
         const rentalId= req.params.id;
-        const userId= req.user.id;
+        const user= req.user;
 
-        const result= await rentalService.rentalComplete(rentalId, userId);
+        const result= await rentalService.rentalComplete(rentalId, user);
         res.json(result);
     }
     catch (err) {

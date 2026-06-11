@@ -17,7 +17,9 @@ const manageCarsPage = async (req, res) => {
         const results = await carService.getAllCars(req.query);
         res.render('admin/manage-cars.ejs', {
             title: 'Quản lý xe',
-            results
+            cars: results.cars,
+            totalPages: results.totalPages,
+            currentPage: results.currentPage,
         });
      } catch (err) {
         console.error(err);
@@ -27,10 +29,12 @@ const manageCarsPage = async (req, res) => {
 
 const manageRentalsPage= async (req, res) => {
    try {
-        const rentals= await rentalService.getRentals(req.query);
+        const results = await rentalService.getRentals(req.query);
         res.render('admin/manage-rentals.ejs',{
             title: 'Quản lý đơn thuê',
-            rentals
+            rentals: results.rentals,
+            totalPages: results.totalPages,
+            currentPage: results.currentPage
         });
    } catch (err) {
         console.error(err);

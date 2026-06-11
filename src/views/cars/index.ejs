@@ -26,7 +26,7 @@
         <h2>Danh sách xe</h2>
         <div class="car-list row">
             <!-- Car items will be dynamically inserted here -->  
-          <% results.cars.forEach(car => { %>
+          <% cars.forEach(car => { %>
             <div class="car-item col-md-4 col-sm-6 mb-4">
                 <div class="car-card card p-3">
 
@@ -47,7 +47,11 @@
          <%})  %> 
         
         </div>
-             <%- include("../partials/pagination.ejs") %>
+             <%- include("../partials/pagination.ejs", 
+             {
+                 totalPages, 
+                currentPage 
+                }) %>
 </main>
     <%- include("../partials/footer.ejs") %>
 </body>

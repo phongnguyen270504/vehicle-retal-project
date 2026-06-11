@@ -5,7 +5,9 @@ const indexPage= async (req,res)=>{
         const results = await carService.getAllCars(req.query);
         res.render('cars/index.ejs',{
             title: 'Danh sách xe',
-            results
+            cars: results.cars,
+            totalPages: results.totalPages,
+            currentPage: results.currentPage
         });
     } catch (err) {
         console.error(err);

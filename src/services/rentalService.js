@@ -5,6 +5,11 @@ const { Op }= require('sequelize');
 
 const getRentals= async (options={})=>{
     const where={};
+
+    const page= Math.max(Number(options.page) || 1, 1);
+    const limit= Math.min(Number(options.limit) || 10, 20);
+    const offset= (page-1)*limit;
+
     if(options.userId){
         where.customer_id= options.userId;
     }
@@ -14,7 +19,7 @@ const getRentals= async (options={})=>{
     if(options.car_id){
         where.car_id= options.car_id;
     }
-    const rentals= await Rental.findAll(
+    const {rows, count}= await Rental.findAndCountAll(
         {
             where,
             include:[
@@ -22,23 +27,34 @@ const getRentals= async (options={})=>{
                     model:Car,
                     attributes:['name','price_per_day','status'],
                 }]
+            ,
+            limit,
+            offset,
+            distinct: true,
+            order: [['id', 'DESC']]
         }
     );
-    return rentals.map(
-        r=>({
-            customerId: r.customer_id,
+
+    const results= rows.map(r=>({
             id: r.id,
+            customerId: r.customer_id,
+            carId: r.car_id,
             startDate: r.start_date,
             endDate: r.end_date,
             totalPrice: r.total_price,
             status: r.status,
             car:{
-                id: r.Car.id,
                 name: r.Car.name,
                 pricePerDay: r.Car.price_per_day,
+                status: r.Car.status,
             }
-        })
-    );
+        }));
+
+    return {
+        rentals: results,
+        totalPages: Math.ceil(count/limit),
+        currentPage: page,
+    };
 }
 
 const getRentalById= async (rentalId)=>{
@@ -70,9 +86,15 @@ const getRentalById= async (rentalId)=>{
     };
 }
 
-const confirmRental= async (rentalId,adminId)=>{
+const confirmRental= async (rentalId,admin)=>{
     const transaction= await sequelize.transaction();
     try {
+        if(admin.role !== 'admin'){
+            const err= new Error('Bạn không có quyền xác nhận đơn thuê');
+            err.statusCode=401;
+            throw err;
+        }
+
         const rental= await Rental.findByPk(rentalId,
         {include:[{
             model: Car
@@ -80,6 +102,7 @@ const confirmRental= async (rentalId,adminId)=>{
         transaction,
         lock: transaction.LOCK.UPDATE}
             );
+        
         if(!rental){
             const err= new Error('Đơn thuê không tồn tại');
             err.statusCode=404;
@@ -98,6 +121,7 @@ const confirmRental= async (rentalId,adminId)=>{
             throw err;
         }
 
+        
         const conflict= await Rental.findOne({
             where:{
                 car_id: rental.car_id,
@@ -121,7 +145,7 @@ const confirmRental= async (rentalId,adminId)=>{
         }
 
         await rental.update(
-            {status:'active', admin_id: adminId},
+            {status:'active', admin_id: admin.id},
             {transaction}
         );
         rental.Car.status='rented';
@@ -139,18 +163,20 @@ const confirmRental= async (rentalId,adminId)=>{
     }
 }
 
-const rentalCancel= async (rentalId,userId)=>{
+const rentalCancel= async (rentalId,user)=>{ 
+    if(rental.customer_id !== user.id || user.role !== 'admin'){
+        const err= new Error('Bạn chỉ có thể hủy đơn thuê của chính mình');
+        err.statusCode=403;
+        throw err;
+    }
+
     const rental= await Rental.findByPk(rentalId);
     if(!rental){
         const err= new Error('Đơn thuê không tồn tại');
         err.statusCode=404;
         throw err;
     }
-    if(rental.user_id !== userId){
-        const err= new Error('Bạn chỉ có thể hủy đơn thuê của chính mình');
-        err.statusCode=403;
-        throw err;
-    }
+   
 
     if(rental.status !=='pending'){
         const err= new Error('Không thể hủy đơn thuê không ở trạng thái chờ duyệt');
@@ -168,16 +194,16 @@ const rentalCancel= async (rentalId,userId)=>{
 
 }
 
-const rentalComplete= async (rentalId,userId)=>{
+const rentalComplete= async (rentalId,user)=>{ 
+    if(user.role !== 'admin'){
+        const err= new Error('Không có quyền hoàn tất đơn này');
+        err.statusCode=403;
+        throw err;
+    }
     const rental= await Rental.findByPk(rentalId);
     if(!rental){
         const err= new Error('Đơn thuê không tồn tại');
         err.statusCode=404;
-        throw err;
-    }
-    if(rental.user_id !== userId){
-        const err= new Error('Không có quyền hoàn tất đơn này');
-        err.statusCode=403;
         throw err;
     }
     if(rental.status !=='active'){
@@ -185,6 +211,7 @@ const rentalComplete= async (rentalId,userId)=>{
         err.statusCode=400;
         throw err;
     }
+    
     rental.status='completed';
     await rental.save();
 

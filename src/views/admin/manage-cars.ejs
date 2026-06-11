@@ -58,7 +58,7 @@
                 <tbody>
                     <!-- Car rows will be dynamically inserted here -->
                      <!-- ROW -->
-                      <% results.cars.forEach(car => { %>
+                      <% cars.forEach(car => { %>
                     <tr>
 
                         <td><%= car.id %></td>
@@ -114,7 +114,7 @@
                 </tbody>
             </table>
          </div>
-         <%- include('../partials/pagination') %>
+         <%- include('../partials/pagination', { totalPages, currentPage }) %>
     </div>
     </div>
 </body>

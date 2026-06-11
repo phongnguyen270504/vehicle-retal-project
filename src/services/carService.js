@@ -65,7 +65,6 @@ const getAllCars= async (query)=>{
         }))
 
         return {
-            totalItems: count,
             totalPages: Math.ceil(count/limit),
             currentPage: page,
             cars: result
