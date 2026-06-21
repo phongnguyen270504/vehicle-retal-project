@@ -29,8 +29,16 @@
 </style>
 </head>
 <body>
+    
     <div class="login-box">
         <h2>Đăng nhập</h2>
+        <div class="mb-3">
+            <% if (error) { %>
+                <div class="alert alert-danger">
+                    <%= error %>
+                </div>
+            <% } %>
+        </div>
         <form action="" method="post">
             <div class="mb-3">
                 <label class="form-label" for="email">Email</label>
@@ -39,7 +47,8 @@
                 id="email" 
                 name="email"
                 placeholder="Nhập email" 
-                required>
+                value="<%= typeof email !== 'undefined' ? email : '' %>"
+                 >
             </div>
             <div class="mb-3">
                 <label class="form-label" for="password">Mật khẩu</label>
@@ -48,7 +57,9 @@
                 id="password" 
                 name="password" 
                 placeholder="Nhập mật khẩu" 
-                required>
+                value="<%= typeof password !== 'undefined' ? password : '' %>"
+                required
+                >
             </div>
             <button type="submit" class="btn btn-primary">Đăng nhập</button>
         </form>

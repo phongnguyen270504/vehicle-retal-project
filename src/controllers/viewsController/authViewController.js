@@ -3,7 +3,10 @@ const authService = require('../../services/authService');
 const loginPage= async (req,res)=>{
     try {
         res.render('auth/login.ejs',{
-            title: 'Đăng nhập'
+            title: 'Đăng nhập',
+            error: null,
+            email: null,
+            password: null,
         });
     } catch (err) {
         console.error(err);
@@ -23,7 +26,12 @@ const login= async (req,res)=>{
         res.redirect('/cars');
     } catch (err) {
         console.error(err);
-        res.status(err.statusCode || 500).json({ message: err.message || 'Server error' });
+        res.render('auth/login.ejs',{
+            title: 'Đăng nhập',
+            error: err.message || 'Server error',
+            email: req.body.email,
+            password: req.body.password
+        });
     }
 }
 
@@ -45,7 +53,11 @@ const logout= async (req,res)=>{
 const registerPage= async (req,res)=>{
     try {
         res.render('auth/register.ejs',{
-            title: 'Đăng ký'
+            title: 'Đăng ký',
+            error: null,
+            email: null,
+            password: null,
+            confirmPassword: null
         });
     } catch (err) {
         console.error(err);
@@ -65,7 +77,13 @@ const register= async (req,res)=>{
         res.redirect('/cars');
     } catch (err) {
         console.error(err);
-        res.status(err.statusCode || 500).json({ message: err.message || 'Server error' });
+        res.render('auth/register.ejs',{
+            title: 'Đăng ký',
+            error: err.message || 'Server error',
+            email: req.body.email,
+            password: req.body.password,
+            confirmPassword: req.body.confirmPassword
+        });
     }
 }
 

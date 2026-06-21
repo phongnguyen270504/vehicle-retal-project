@@ -3,6 +3,16 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
 const loginUser= async (email, password) => {
+   if(typeof email !== 'string' || !email.trim()){
+        const err = new Error('Email không được để trống');
+        err.statusCode = 400;
+        throw err;
+    }
+    if(typeof password !== 'string' || !password.trim()){
+        const err = new Error('Mật khẩu không được để trống');
+        err.statusCode = 400;
+        throw err;
+    }
     const user = await User.findOne({ where: { email } });
     if (!user) {
         const err = new Error('Tài khoản hoặc mật khẩu không đúng');
@@ -20,11 +30,56 @@ const loginUser= async (email, password) => {
 }
 
 const registerUser = async (email, password, confirmPassword) => {
+    if (!email || !password || !confirmPassword) {
+        const err = new Error('Vui lòng điền đầy đủ thông tin');
+        err.statusCode = 400;
+        throw err;
+    }
+    
+    if(typeof email !== 'string' || !email.trim()){
+        const err = new Error('Email không được để trống');
+        err.statusCode = 400;
+        throw err;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        const err = new Error('Email không hợp lệ');
+        err.statusCode = 400;
+        throw err;
+    }
+    if(typeof password !== 'string' || !password.trim()){
+        const err = new Error('Mật khẩu không được để trống');
+        err.statusCode = 400;
+        throw err;
+    }
+    
+    if(typeof confirmPassword !== 'string' || !confirmPassword.trim()){
+        const err = new Error('Xác nhận mật khẩu không được để trống');
+        err.statusCode = 400;
+        throw err;
+    }
     if (password !== confirmPassword) {
         const err = new Error('Mật khẩu xác nhận không khớp');
         err.statusCode = 400;
         throw err;
     }
+    if(password.length < 8){
+        const err = new Error('Mật khẩu phải có ít nhất 8 ký tự');
+        err.statusCode = 400;
+        throw err;
+    }
+    if(password.length > 100){
+        const err = new Error('Mật khẩu không được quá 100 ký tự');
+        err.statusCode = 400;
+        throw err;
+    }
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+        const err = new Error('Nguời dùng đã tồn tại');
+        err.statusCode = 400;
+        throw err;
+    }
+    
     const hashpass = await bcrypt.hash(password, 10);
     const user = await User.create({
         email,
