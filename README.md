@@ -1,4 +1,4 @@
-# Vehicle Rental System API
+# Vehicle Rental System
 Personal Project – In Progress
 
 ## Text stack
