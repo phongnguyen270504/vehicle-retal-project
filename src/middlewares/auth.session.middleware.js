@@ -1,15 +1,18 @@
 const isLogin = (req, res, next) => {
-    if (req.session && req.session.user) {
+    if (req.session.user) {
         return next();
     }
+    req.session.returnTo= req.originalUrl;
     res.redirect('/auth/login');
+    return;
 };
 
 const isAdmin = (req, res, next) => {
-    if (req.session && req.session.user && req.session.user.role === 'admin') {
-        return next();
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        res.redirect('/cars');
+        return;
     }
-    res.status(403).json({ message: 'Bạn không có quyền truy cập tài nguyên này' });
+     return next();
 };
 
 module.exports = { isLogin, isAdmin };

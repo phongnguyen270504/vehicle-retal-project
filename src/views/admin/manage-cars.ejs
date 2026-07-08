@@ -39,11 +39,33 @@
     <%- include('../partials/topbar') %>
         <div class="content">
         <h1>Quản lý xe</h1>
+       
         <a href="/cars/create" class="btn btn-primary mb-3">
             + Thêm xe
         </a>
         <!-- Table content will go here -->
          <div class="table-box">
+             <div class="my-2">
+            <form method="GET" action="/admin/manage-cars">
+                <div class="row g-2">
+                    <div class="col-md-10">
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="name"
+                            placeholder="Nhập tên xe..."
+                            value="<%= currentName || '' %>"
+                        >
+                    </div>
+
+                    <div class="col-md-2 d-grid">
+                        <button class="btn btn-primary">
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
             <table class="table align-middle">
                 <thead>
                     <tr>
@@ -66,7 +88,9 @@
                         <td>
 
                             <img
-                                src="https://images.unsplash.com/photo-1503376780353-7e6692767b70"
+                                src="<%= car.image %>"
+                                alt="<%= car.name %>"
+                                style="width: 100px; height: auto;"
                             >
 
                         </td>

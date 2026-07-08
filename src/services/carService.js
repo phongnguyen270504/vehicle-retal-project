@@ -3,33 +3,42 @@ const Car = require("../models/Car");
 // const CarType= require("../models/CarType");
 const {Op, NUMBER}= require("sequelize");
 
-const getAllCars= async (query)=>{
+const getAllCars= async (query={})=>{
         const whereCar={};
-        const whereBrand={};
-        const whereType={};
+        // const whereBrand={};
+        // const whereType={};
 
         const page= Math.max(Number(query.page) || 1, 1);
         const limit= Math.min(Number(query.limit) || 10, 20);
         const offset= (page-1)*limit;
+        const order= query.order === 'asc' ? 'ASC' : 'DESC';
 
         if(query.name?.trim())
         {
-            whereCar.name={ [Op.like]: `%${query.name.trim()}%`};
+             const keyword = query.name.trim();
+            whereCar.name={ [Op.like]: `%${keyword}%`};
         }
 
-        if(query.brand?.trim()){
+        // if(query.brand?.trim()){
 
-            whereBrand.name=query.brand.trim();
-        }
+        //     whereBrand.name=query.brand.trim();
+        // }
 
-        if(query.type?.trim())
-        {
-            whereType.name=query.type.trim();
-        }
+        // if(query.type?.trim())
+        // {
+        //     whereType.name=query.type.trim();
+        // }
 
         if (query.status) 
         {
             whereCar.status = query.status;
+        }
+        
+        if(query.minPrice && isNaN(Number(query.minPrice)) || query.maxPrice && isNaN(Number(query.maxPrice)))
+        {
+            const err= new Error('Giá thuê không hợp lệ');
+            err.statusCode= 400;
+            throw err;
         }
 
         if (query.minPrice || query.maxPrice) {
@@ -47,11 +56,11 @@ const getAllCars= async (query)=>{
         const {count, rows}= await Car.findAndCountAll(
             { 
                 where: whereCar,
-                attributes:['id', 'name', 'price_per_day', 'status', 'brand', 'type'],
+                attributes:[ 'id', 'name', 'price_per_day', 'status', 'brand', 'type','image'],
                 limit: limit,
                 offset: offset,
                 distinct: true,
-                order: [['id', 'DESC']]
+                order: [['id', order]]
             }
         );
 
@@ -61,15 +70,21 @@ const getAllCars= async (query)=>{
             pricePerDay: c.price_per_day,
             status: c.status,
             brand: c.brand ?? null,
-            type: c.type ?? null
+            type: c.type ?? null,
+            image: c.image ?? null
         }))
 
+        const totalPages= Math.ceil(count/limit);
+
         return {
-            totalPages: Math.ceil(count/limit),
+            totalItems: count,
+            totalPages,
             currentPage: page,
+            limit,
             cars: result
         };
 }
+
 
 const getCarById= async (id)=>{
         const car = await Car.findByPk(id,{
@@ -92,7 +107,7 @@ const getCarById= async (id)=>{
 }
 
 const createCar = async (data)=>{
-    const {name, brand, type, price_per_day}= data;
+    const {name, brand, type, price_per_day, image}= data;
 
     // if(!name || !brand || !type || !price_per_day)
     // {
@@ -142,7 +157,8 @@ const createCar = async (data)=>{
         brand,
         type,
         price_per_day,
-        status: "available"
+        status: "available",
+        image: data.image || null
     })
 
     return ({

@@ -3,11 +3,13 @@ const router = express.Router();
 
 const rentalViewController = require('../../controllers/viewsController/rentalViewController');
 
-router.post('/:id/confirm', rentalViewController.confirmRental);
+const authSessionMiddleware= require('../../middlewares/auth.session.middleware');
+
+router.post('/:id/confirm', authSessionMiddleware.isAdmin, rentalViewController.confirmRental);
 
 router.post('/:id/cancel', rentalViewController.cancelRental);
 
-router.post('/:id/complete', rentalViewController.completeRental);
+router.post('/:id/complete', authSessionMiddleware.isAdmin ,rentalViewController.completeRental);
 
 router.get('/:id', rentalViewController.rentalDetailPage);
 

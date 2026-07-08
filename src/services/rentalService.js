@@ -1,7 +1,7 @@
 const Car= require('../models/Car');
 const Rental= require('../models/Rental');
 const {sequelize}= require('../models/db');
-const { Op }= require('sequelize');
+const { Op, where }= require('sequelize');
 
 const getRentals= async (options={})=>{
     const where={};
@@ -158,7 +158,7 @@ const confirmRental= async (rentalId,admin)=>{
             adminId: rental.admin_id,
         };
     } catch (err) {
-        transaction.rollback();
+        await transaction.rollback();
         throw err;
     }
 }
@@ -237,8 +237,8 @@ const rentalCreate= async (userId,data)=>{
         err.statusCode=404;
         throw err;
     }
-
-    if(car.status !=='available')
+    
+    if(car.status ==='maintenance')
     {
         const err= new Error('Xe không khả dụng để thuê');
         err.statusCode=400;
@@ -253,6 +253,7 @@ const rentalCreate= async (userId,data)=>{
         err.statusCode=400;
         throw err;
     }
+   
     const total_price= days * Number(car.price_per_day);
 
    const rental= await Rental.create({

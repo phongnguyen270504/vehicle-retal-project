@@ -33,10 +33,10 @@ const Car= sequelize.define(
             type: DataTypes.ENUM('available','rented','maintenance'),
             defaultValue: 'available'
         },
-        // image:{
-        //     type: DataTypes.STRING,
-        //     allowNull: true,
-        // }
+        image:{
+            type: DataTypes.STRING,
+            allowNull: true,
+        }
     },{
         tableName:'cars',
         timestamps: false,

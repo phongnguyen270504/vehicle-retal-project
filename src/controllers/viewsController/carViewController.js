@@ -2,12 +2,20 @@ const carService= require('../../services/carService');
 const rentalService= require('../../services/rentalService');
 const indexPage= async (req,res)=>{
     try {
-        const results = await carService.getAllCars(req.query);
+        const query ={
+            ...req.query,
+            limit: Number(req.query.limit) || 2,
+        }
+        const results = await carService.getAllCars(query);
         res.render('cars/index.ejs',{
             title: 'Danh sách xe',
             cars: results.cars,
+            limit: results.limit,
+            query: req.query,
             totalPages: results.totalPages,
-            currentPage: results.currentPage
+            currentPage: results.currentPage,
+            totalItems: results.totalItems,
+            currentName: req.query.name || '',
         });
     } catch (err) {
         console.error(err);
@@ -17,6 +25,11 @@ const indexPage= async (req,res)=>{
 const getCarById= async (req,res) =>{
     try {
         const id= Number(req.params.id);
+        if(isNaN(id)){
+            const err= new Error('ID không hợp lệ');
+            err.statusCode= 400;
+            throw err;
+        }
         const car = await carService.getCarById(id);
         res.render('cars/car-detail.ejs',{
             result: car
@@ -32,6 +45,11 @@ const getCarById= async (req,res) =>{
 const bookingCarPage= async (req,res)=>{
     try {
         const id= Number(req.params.id);
+        if(isNaN(id)){
+            const err= new Error('ID không hợp lệ');
+            err.statusCode= 400;
+            throw err;
+        }
         const car = await carService.getCarById(id);
         res.render('cars/booking-page.ejs',{
             result: car
@@ -77,8 +95,8 @@ const createCarPage= async (req,res)=>{
 
 const createCar= async (req,res)=>{
     try {
-        console.log("Dữ liệu nhận được:", req.body);
-        const car = await carService.createCar(req.body);
+        const image= req.file ? "/uploads/cars/" + req.file.filename: null;
+        const car = await carService.createCar({...req.body, image});
         res.redirect('/admin/manage-cars');
     } catch (err) {
         console.error(err);

@@ -23,7 +23,10 @@ const login= async (req,res)=>{
             email: user.email,
             role: user.role
         };
-        res.redirect('/cars');
+        const returnTo= req.session.returnTo || '/';
+        
+        delete req.session.returnTo;
+        res.redirect(returnTo);
     } catch (err) {
         console.error(err);
         res.render('auth/login.ejs',{

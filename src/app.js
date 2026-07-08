@@ -2,8 +2,10 @@ const express = require('express');
 const cors= require('cors')
 const path = require('path');
 const session = require('express-session');
+const multer= require('multer');
 
 const globalMiddleware= require('./middlewares/global.middleware');
+const authSessionsMiddleware = require('./middlewares/auth.session.middleware');
 
 const carRouter= require('./router/carRouter')
 const rentalRouter= require('./router/rentalRouter');
@@ -40,8 +42,8 @@ app.get('/', (req, res) => {
 });
 app.use('/cars', carViewRouter);
 app.use('/auth', authViewRouter);
-app.use('/admin', adminViewRouter);
-app.use('/rentals', rentalViewRouter);
+app.use('/admin', authSessionsMiddleware.isLogin, authSessionsMiddleware.isAdmin, adminViewRouter);
+app.use('/rentals', authSessionsMiddleware.isLogin, rentalViewRouter);
 
 app.use((req, res) => {
     res.status(404).json({ message: 'Not found' });

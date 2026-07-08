@@ -10,5 +10,4 @@ router.post('/',authMiddleware.verifyToken,authMiddleware.verifyRole(['admin']),
 router.put('/:id',authMiddleware.verifyToken,authMiddleware.verifyRole(['admin']),carController.updateCar);
 router.delete('/:id',authMiddleware.verifyToken,authMiddleware.verifyRole(['admin']),carController.deleteCar);
 
-
 module.exports = router;

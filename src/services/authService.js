@@ -13,16 +13,18 @@ const loginUser= async (email, password) => {
         err.statusCode = 400;
         throw err;
     }
+
+    email = email.trim().toLowerCase();
     const user = await User.findOne({ where: { email } });
     if (!user) {
         const err = new Error('Tài khoản hoặc mật khẩu không đúng');
-        err.statusCode = 404;
+        err.statusCode = 401;
         throw err;
     }
     const isMatch = await bcrypt.compare(password, user.hashpass);
     if (!isMatch) {
         const err = new Error('Tài khoản hoặc mật khẩu không đúng');
-        err.statusCode = 404;
+        err.statusCode = 401;
         throw err;
     }
    
@@ -30,17 +32,14 @@ const loginUser= async (email, password) => {
 }
 
 const registerUser = async (email, password, confirmPassword) => {
-    if (!email || !password || !confirmPassword) {
-        const err = new Error('Vui lòng điền đầy đủ thông tin');
-        err.statusCode = 400;
-        throw err;
-    }
     
     if(typeof email !== 'string' || !email.trim()){
         const err = new Error('Email không được để trống');
         err.statusCode = 400;
         throw err;
     }
+
+    email = email.trim().toLowerCase();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         const err = new Error('Email không hợp lệ');
@@ -73,6 +72,7 @@ const registerUser = async (email, password, confirmPassword) => {
         err.statusCode = 400;
         throw err;
     }
+    
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
         const err = new Error('Nguời dùng đã tồn tại');
