@@ -28,6 +28,7 @@ router.get('/:id/update',
 router.post('/:id/update',
     authSessionMiddleware.isLogin, 
     authSessionMiddleware.isAdmin, 
+    uploadMiddleware,
     carViewController.updateCar);
 
 router.get('/:id/booking',

@@ -7,8 +7,17 @@ const User= sequelize.define('User',{
         autoIncrement:true,
         allowNull:false,
     },
+    fullname:{
+        type: DataTypes.STRING(80),
+        allowNull:false,
+        
+    },
+    phone:{
+        type: DataTypes.STRING(20),
+        allowNull:true,
+    },
     email:{
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255),
         allowNull:false,
         unique: true,
         validate:{
@@ -17,7 +26,7 @@ const User= sequelize.define('User',{
         }
     },
     hashpass:{
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255),
         allowNull: false,
         validate:{
             notEmpty:true,
@@ -31,10 +40,22 @@ const User= sequelize.define('User',{
         validate: {
             isIn: [['admin', 'customer']]
         }
-    }
+    },
+    user_status:{
+        type: DataTypes.ENUM('active','locked','inactive'),
+        allowNull:false,
+        defaultValue: 'active',
+        validate: {
+            isIn: [['active', 'locked', 'inactive']]
+        }
+    },
+
+
 },{
     tableName:'users',
     timestamps: false,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
 })
 
 module.exports=User;

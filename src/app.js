@@ -10,6 +10,7 @@ const authSessionsMiddleware = require('./middlewares/auth.session.middleware');
 const carRouter= require('./router/carRouter')
 const rentalRouter= require('./router/rentalRouter');
 const authRouter= require('./router/authRouter');
+const userRouter= require('./router/userRoute');
 
 const carViewRouter= require('./router/webRouters/carViewRouter');
 const authViewRouter= require('./router/webRouters/authViewRouter');
@@ -36,6 +37,7 @@ app.use(globalMiddleware.globalVariable);
 app.use('/api/cars', carRouter)
 app.use('/api/auth', authRouter);
 app.use('/api/rentals', rentalRouter);
+app.use('/api/users', userRouter);
 
 app.get('/', (req, res) => {
     res.redirect('/cars');

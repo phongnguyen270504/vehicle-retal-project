@@ -133,8 +133,12 @@ const updateCarPage= async (req,res)=>{
 const updateCar= async (req,res) =>{
     try {
         const id= Number(req.params.id);
+        const file= req.file;
+        if(file){
+            req.body.image= "/uploads/cars/" + file.filename;
+        }
         console.log("Dữ liệu nhận được:", req.body);
-        await carService.updateCar(id, req.body);
+        await carService.updateCar(id, {...req.body,file: req.file});
         res.redirect('/admin/manage-cars');
     } catch (err) {
         console.error(err);

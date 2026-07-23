@@ -26,6 +26,7 @@ const login= async (req,res)=>{
         const returnTo= req.session.returnTo || '/';
         
         delete req.session.returnTo;
+        
         res.redirect(returnTo);
     } catch (err) {
         console.error(err);

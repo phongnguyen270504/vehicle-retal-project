@@ -1,4 +1,6 @@
 const Car = require("../models/Car");
+const fs = require('fs');
+const path = require('path');
 // const Brand= require("../models/Brand");
 // const CarType= require("../models/CarType");
 const {Op, NUMBER}= require("sequelize");
@@ -88,7 +90,7 @@ const getAllCars= async (query={})=>{
 
 const getCarById= async (id)=>{
         const car = await Car.findByPk(id,{
-            attributes:['id', 'name', 'price_per_day', 'status', 'brand', 'type'],
+            attributes:['id', 'name', 'price_per_day', 'status', 'brand', 'type','image'],
         });
         if(!car){
             const err= new Error("Không tìm thấy xe");
@@ -101,7 +103,8 @@ const getCarById= async (id)=>{
             pricePerDay: car.price_per_day,
             status: car.status,
             brand: car.brand ?? null,
-            type: car.type ?? null
+            type: car.type ?? null,
+            image: car.image ?? null
         }
         return result;
 }
@@ -172,12 +175,14 @@ const createCar = async (data)=>{
 }
 
 const updateCar= async (id,data)=>{
-    const car= await Car.findByPk(id);
+    try{
+        const car= await Car.findByPk(id);
     if(!car){
         const err = new Error('Không tìm thấy xe');
         err.statusCode = 404;
         throw err;
     }
+    const oldImage= car.image;
     const updateData={};
     if(data.name !== undefined)
     {
@@ -225,6 +230,9 @@ const updateCar= async (id,data)=>{
         }
         updateData.type= data.type.trim();
     }
+    if(data.file)    {
+        updateData.image=  "/uploads/cars/" + data.file.filename;
+    }
     // if('brand_id' in data){
     //     const brandId= Number(data.brand_id);
     //     if (isNaN(brandId) || brandId <= 0) {
@@ -253,19 +261,31 @@ const updateCar= async (id,data)=>{
     //         throw err;
     //     }
     // }
+   
     await car.update(updateData);
+   
+    if (data.file && oldImage) {
+        const oldImagePath = path.join(__dirname, "..", "public", oldImage);
+        await fs.promises.unlink(oldImagePath).catch(() => {});
+    }
 
-    const updatedCar = await Car.findByPk(id, {
-            attributes: ['id', 'name', 'price_per_day', 'status', 'brand', 'type'],
-        });
+    
     return ({
-            id: updatedCar.id,
-            name: updatedCar.name,
-            pricePerDay: updatedCar.price_per_day,
-            status: updatedCar.status,
-            brand: updatedCar.brand,
-            type: updatedCar.type
+            id: car.id,
+            name: car.name,
+            pricePerDay: car.price_per_day,
+            status: car.status,
+            brand: car.brand,
+            type: car.type,
+            image: car.image
         });
+    }
+        catch (err) {
+        if (data.file) {
+            await fs.promises.unlink(data.file.path).catch(() => {});
+        }
+        throw err;
+    }
 }
 
 const deleteCar=async (id)=>{

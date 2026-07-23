@@ -54,6 +54,7 @@ const getRentals= async (options={})=>{
         rentals: results,
         totalPages: Math.ceil(count/limit),
         currentPage: page,
+        
     };
 }
 

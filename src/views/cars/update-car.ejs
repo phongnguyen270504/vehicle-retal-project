@@ -34,10 +34,10 @@
         <div class="content">
             <h1><%= title %></h1>
             <div class="form-box">
-                <form action="/cars/<%= result.id %>/update" method="POST" >
+                <form action="/cars/<%= result.id %>/update" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="name" class="form-label">Tên xe</label>
-                        <input type="text" class="form-control" id="name" name="name" value="<%= result.name %>" required>
+                        <input type="text" class="form-control" id="name" name="name" value="<%= result.name %>" >
                     </div>
                     <div class="mb-3">
                         <label for="price" class="form-label">Giá thuê (VND/ngày)</label>
@@ -61,7 +61,11 @@
                         </div>
                     <div class="mb-3">
                         <label for="image" class="form-label">Ảnh xe</label>
-                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*"><% if(result.image){ %>
+                            
+                        <img src="<%= result.image %>" alt="<%= result.name %>" class="img-fluid mb-2" style="max-width: 200px;">
+                        <% } %>
                     </div>
                     <button type="submit" class="btn btn-primary">Cập nhật xe</button>
                 </form>

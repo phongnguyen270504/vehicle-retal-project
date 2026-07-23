@@ -1,5 +1,6 @@
 const carService = require('../../services/carService');
 const rentalService = require('../../services/rentalService');
+const userService = require('../../services/userService');
 const adminService= require('../../services/adminService');
 const dashboardPage = async (req, res) => {
     try {
@@ -52,6 +53,18 @@ const manageRentalsPage= async (req, res) => {
    }
 }
 
+const manageUsersPage = async (req, res) => {
+    try {
+        const users = await userService.getAllUsers();
 
+        res.render('admin/manage-users.ejs', {
+            title: 'Quản lý người dùng',
+            users
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
 
-module.exports = {dashboardPage, manageCarsPage, manageRentalsPage};
+module.exports = {dashboardPage, manageCarsPage, manageRentalsPage, manageUsersPage};
